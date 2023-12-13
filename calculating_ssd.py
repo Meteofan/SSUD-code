@@ -42,7 +42,8 @@ axes=['x','y']
 tot_gps=[400] # total number of grid points to consider
 max_ssds=[133] # maximum spin up
 n_stds=[2.5]
-
+lwidth=1.8
+                    
 #print(simulations)
 
 # Loop of both sides of the longitudinal or meridional mean values of precipitation
@@ -82,13 +83,12 @@ for nnstd,n_std in enumerate(n_stds):
                         count2p5=0
                         for isim,sim in enumerate(simulations):
                             print('Processing simulation: ',sim_names[sim])
-                            file_name='npy/raw_signal_'+axe+'_'+sim+'_'+sea+'_normalized.npy'
+                            file_name=pr.path_in+'raw_signal_'+axe+'_'+sim+'_'+sea+'_normalized.npy'
                             print('Reading: '+file_name)
                             darray=np.load(file_name) # read array
-                            file_name='npy/raw_signal_'+axe+'_'+sim_pilots[sim]+'_'+sea+'_normalized.npy'
+                            file_name=pr.path_in+'raw_signal_'+axe+'_'+sim_pilots[sim]+'_'+sea+'_normalized.npy'
                             print('Reading: '+file_name)
                             darray_p=np.load(file_name) # read array
-                            #sys.exit(0)
                             add_file='_n-std'+str(n_std)+'_tot-gp'+str(tot_gp)+'_max-ssd'+str(max_ssd)+'_'+filter_type+str(sigma)+'_'+axe+'_'+borders[iborder]+'_'+sea+'_'+normalise
                             if iborder==0: # for west and south keep as it is
                                 raw=darray[:tot_gp]
@@ -108,8 +108,8 @@ for nnstd,n_std in enumerate(n_stds):
                             filteredp=pr.apply_filter(rawp,filter_type,sigma) #filtered data
                             sim_curve[sim]=filtered
                             sim_curve[sim_pilots[sim]]=filteredp
-                            plt.plot(x,filtered,label=sim_names[sim],color=sim_colors[sim],linestyle=sim_lines[sim],linewidth=1.5)
-                            plt.plot(x,filteredp,label=pilot_names[sim_pilots[sim]],color=pilot_colors[sim_pilots[sim]],linewidth=1.5)
+                            plt.plot(x,filtered,label=sim_names[sim],color=sim_colors[sim],linestyle=sim_lines[sim],linewidth=lwidth)
+                            plt.plot(x,filteredp,label=pilot_names[sim_pilots[sim]],color=pilot_colors[sim_pilots[sim]],linewidth=lwidth)
                             RD=(filtered-filteredp)/(filtered+filteredp)
                             rat_curve[sim]=RD
                             ssu_distance=pr.get_spatial_su_distance(RD,max_ssd,n_std) # spatial spinup distance
@@ -123,13 +123,10 @@ for nnstd,n_std in enumerate(n_stds):
                         if normalise=='norm-yes':
                             plt.ylim([0.3,1.7])
                         else:
-                            if np.mean(raw)>1.1:
-                                ylim=[round(np.mean(raw),1)-1.1,round(np.mean(raw),1)+1.1]
-                            else:
-                                ylim=[0,2.2]
+                            ylim=[0,3.3]
                                 
                         plt.ylim(ylim)
-                        plt.text(x[-1]-50,ylim[1]-0.2,sea,fontsize = 18,bbox = dict(facecolor = 'grey', alpha = 0.5))
+                        plt.text(x[-1]-50,ylim[1]-0.4,sea,fontsize = 18,bbox = dict(facecolor = 'grey', alpha = 0.5))
 
                         """
                         "legende = plt.legend(loc="lower right", framealpha=1,prop={'size': 10})
@@ -139,33 +136,39 @@ for nnstd,n_std in enumerate(n_stds):
                         plt.legend().set_visible(False)
                         #plt.legend(loc='lower right')
                         """
-                        plt.savefig('png/raw-filtered_data'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
+                        if borders[iborder]=='west' and len(simulations)==2:
+                            plt.legend(loc='upper left')
+                        plt.savefig(pr.path_out+'raw-filtered_data'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
                         plt.close("all")
 
                         # Ratio figures
                         for sim in simulations:
                             if sim_names[sim][:6]=='GEM2.5':
-                                plt.plot(x,rat_curve[sim],label=sim_names[sim],color=sim_colors[sim],linestyle='dashed',linewidth=1.5)
-                                ssu_distance=pr.get_spatial_su_distance(rat_curve[sim],max_ssd,n_std) # spatial spinup distance
-                                plt.plot(ssu_distance[0],rat_curve[sim][ssu_distance[0]],color=sim_colors[sim],marker='o',ms=10)
-                                # Add standard deviation lines
-                                plt.plot(x[max_ssd:],(ssu_distance[1]+n_std*ssu_distance[2])*np.ones(x[max_ssd:].shape[0]),color=sim_colors[sim],linestyle='solid',linewidth=.75)
-                                plt.plot(x[max_ssd:],(ssu_distance[1]-n_std*ssu_distance[2])*np.ones(x[max_ssd:].shape[0]),color=sim_colors[sim],linestyle='solid',linewidth=.75)
+                                error = n_std*ssu_distance[2]
+                                plt.plot(x,rat_curve[sim],label=sim_names[sim],color=sim_colors[sim],linestyle='dashed',linewidth=lwidth)
+                                plt.fill_between(x, rat_curve[sim]-error, rat_curve[sim]+error,color=sim_colors[sim],alpha=.5)
 
-                        plt.text(x[-1]-50,.35,sea, fontsize = 18,bbox = dict(facecolor = 'grey', alpha = 0.5))
+                        for sim in simulations:
+                            if sim_names[sim][:6]=='GEM2.5':
+                                ssu_distance=pr.get_spatial_su_distance(rat_curve[sim],max_ssd,n_std) # spatial spinup distance
+                                plt.plot(ssu_distance[0],rat_curve[sim][ssu_distance[0]],color=sim_colors[sim],marker='o',ms=10,alpha=1,markeredgecolor='black',markeredgewidth=2.)
+
+                        plt.text(x[-1]-50,-.9,sea, fontsize = 18,bbox = dict(facecolor = 'grey', alpha = 0.5))
                         plt.xlabel('$\#$ of grid points from '+borders[iborder]+' border')
                         plt.ylabel('Relative Difference (RD)')
                         plt.xlim([0,x[-1]+1])
                         #plt.ylim([0.5,1.4])
-                        plt.ylim([-1,.5])
+                        plt.ylim([-1,.3])
                         #legende = plt.legend(loc="lower right", framealpha=1,prop={'size': 10})
                         #frame = legende.get_frame()
                         #frame.set_color('white')
                         #pr.export_legend(legende,'png/ratio-filtered_data_legend.png')
-                        plt.legend().set_visible(False)
-                        plt.savefig('png/ratio-filtered_data'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
+                        if borders[iborder]=='west' and len(simulations)==2:
+                            plt.legend(loc='lower left')
+                        #plt.legend().set_visible(False)
+                        plt.savefig(pr.path_out+'ratio-filtered_data'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
                         plt.close("all")
-                #sys.exit(0)
+
 x1=np.arange(4)+1
 for nnstd,n_std in enumerate(n_stds):
     for ntotgp,tot_gp in enumerate(tot_gps):
@@ -193,14 +196,13 @@ for nnstd,n_std in enumerate(n_stds):
                 plt.xlim([0,5])
                 plt.ylim([0,maxy])
                 plt.xticks(np.arange(4)+1,border_name)
-                plt.savefig('png/ssd-mean_'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
+                plt.savefig(pr.path_out+'ssd-mean_'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
 
-                legende = plt.legend(loc="lower right", framealpha=1,prop={'size': 10})
+                legende = plt.legend(framealpha=1)
                 frame = legende.get_frame()
                 frame.set_color('white')
-                pr.export_legend(legende,'png/ssd-mean_legend_normalized.png')
+                pr.export_legend(legende,pr.path_out+'ssd-mean_legend_normalized.png')
                 plt.legend().set_visible(False)
-                
                 plt.close("all")
 
             maxy=100
@@ -224,12 +226,12 @@ for nnstd,n_std in enumerate(n_stds):
             # Put a legend to the right of the current axis
             #ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
-            plt.savefig('png/ssd-mean_'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
+            plt.savefig(pr.path_out+'ssd-mean_'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
 
-            legende = plt.legend(loc="lower right", framealpha=1,prop={'size': 10})
+            legende = plt.legend(framealpha=1)
             frame = legende.get_frame()
             frame.set_color('white')
-            pr.export_legend(legende,'png/ssd-mean_legend_'+add_file+'_normalized.png')
+            pr.export_legend(legende,pr.path_out+'ssd-mean_legend_'+add_file+'_normalized.png')
             plt.legend().set_visible(False)
             plt.close("all")
             
@@ -248,12 +250,12 @@ for nnstd,n_std in enumerate(n_stds):
             ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
             # Put a legend to the right of the current axis
             #ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-            plt.savefig('png/ssd-mean_'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
+            plt.savefig(pr.path_out+'ssd-mean_'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
 
             legende = plt.legend(loc="lower right", framealpha=1,prop={'size': 10})
             frame = legende.get_frame()
             frame.set_color('white')
-            pr.export_legend(legende,'png/ssd-mean_legend_'+add_file+'_normalized.png')
+            pr.export_legend(legende,pr.path_out+'ssd-mean_legend_'+add_file+'_normalized.png')
             plt.legend().set_visible(False)
             plt.close("all")
 
@@ -292,12 +294,12 @@ for ii in [0,1,2]:
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     # Put a legend to the right of the current axis
     #ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.savefig('png/'+add1+'_'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
+    plt.savefig(pr.path_out+add1+'_'+add_file+'_normalized.png', bbox_inches="tight",dpi=dpi_num)
 
-    legende = plt.legend(loc="lower right", framealpha=1,prop={'size': 10})
+    legende = plt.legend(framealpha=1)
     frame = legende.get_frame()
     frame.set_color('white')
-    pr.export_legend(legende,'png/'+ add1 + '_legend_normalized.png')
+    pr.export_legend(legende,pr.path_out+add1 + '_legend_normalized.png')
     plt.legend().set_visible(False)
     plt.close("all")
     

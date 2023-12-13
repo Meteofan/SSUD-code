@@ -37,8 +37,8 @@ def get_spatial_su_distance(array,max_ssd,n_std):
 
 seasons=['DJF','MAM','JJA','SON']
 #seasons=['JJA']
-sim_names={'ECan_2.5km_ERA5_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (ERA5)','ECan_2.5km_NAM11mCS_noQC_noVS_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (GEM12_SU)','ECan_2.5km_NAM11mCS_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (GEM12_SU-W)','ECan_2.5km_NAM11mP3_noVS_noICE_noRAIN_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (GEM12_P3-C)','ECan_2.5km_NAM11mP3_noVS_noICE_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (GEM12_P3-CR)', 'ECan_2.5km_NAM11mP3_noVS_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (GEM12_P3-CRI)','ECan_2.5km_NAM11mP3_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (GEM12_P3-WCRI)'}
-#sim_names={'ECan_2.5km_ERA5_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (ERA5)','ECan_2.5km_NAM11mP3_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (GEM12_P3-WCRI)'}
+sim_names={'ECan_2.5km_ERA5_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (ERA5)','ECan_2.5km_NAM11mCS_noQC_noVS_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (SU)','ECan_2.5km_NAM11mCS_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (SU-W)','ECan_2.5km_NAM11mP3_noVS_noICE_noRAIN_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (P3-C)','ECan_2.5km_NAM11mP3_noVS_noICE_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (P3-CR)', 'ECan_2.5km_NAM11mP3_noVS_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (P3-CRI)','ECan_2.5km_NAM11mP3_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (P3-WCRI)'}
+#sim_names={'ECan_2.5km_ERA5_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (ERA5)','ECan_2.5km_NAM11mP3_newP3_CLASS_DEEPoff_SHALon':'GEM2.5 (P3-WCRI)'}
 
 sim_cpu={'ECan_2.5km_ERA5_newP3_CLASS_DEEPoff_SHALon':1.993,'ECan_2.5km_NAM11mCS_noQC_noVS_newP3_CLASS_DEEPoff_SHALon':2.078,'ECan_2.5km_NAM11mCS_newP3_CLASS_DEEPoff_SHALon':2.087,'ECan_2.5km_NAM11mP3_noVS_noICE_noRAIN_newP3_CLASS_DEEPoff_SHALon':2.090,'ECan_2.5km_NAM11mP3_noVS_noICE_newP3_CLASS_DEEPoff_SHALon':2.096, 'ECan_2.5km_NAM11mP3_noVS_newP3_CLASS_DEEPoff_SHALon':2.141,'ECan_2.5km_NAM11mP3_newP3_CLASS_DEEPoff_SHALon':2.145}
 
@@ -57,3 +57,8 @@ pilot_colors={'ERA5':'k','NAM-11m_ERA5_GEM5_CLASS_NV_NA_CONSUN_SN8_20yrs_interp'
 sim_lines={'ECan_2.5km_ERA5_newP3_CLASS_DEEPoff_SHALon':'dashed','ECan_2.5km_NAM11mCS_noQC_noVS_newP3_CLASS_DEEPoff_SHALon':'dashed','ECan_2.5km_NAM11mCS_newP3_CLASS_DEEPoff_SHALon':'dashed','ECan_2.5km_NAM11mP3_noVS_noICE_noRAIN_newP3_CLASS_DEEPoff_SHALon':'dashed','ECan_2.5km_NAM11mP3_noVS_noICE_newP3_CLASS_DEEPoff_SHALon':'dashed', 'ECan_2.5km_NAM11mP3_noVS_newP3_CLASS_DEEPoff_SHALon':'dashed','ECan_2.5km_NAM11mP3_newP3_CLASS_DEEPoff_SHALon':'dashed'}
 
 model_res={'dx':2.5,'Nx':1330,'Ny':1060}
+
+path_in='/Users/adiluca/Library/CloudStorage/OneDrive-UQAM/Projects/Current/MELCC-SACHR/Articles/Francois/npy/'
+path_out='/Users/adiluca/Library/CloudStorage/OneDrive-UQAM/Projects/Current/MELCC-SACHR/Articles/Francois/Revision1/SSUD-code/png/'
+if len(sim_names.keys())==2:
+    path_out='/Users/adiluca/Library/CloudStorage/OneDrive-UQAM/Projects/Current/MELCC-SACHR/Articles/Francois/Revision1/SSUD-code/png/2sims/'

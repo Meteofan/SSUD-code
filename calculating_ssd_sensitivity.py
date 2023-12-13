@@ -65,10 +65,10 @@ for nnstd,n_std in enumerate(n_stds):
                         count2p5=0
                         for isim,sim in enumerate(simulations):
                             print('Processing simulation: ',sim_names[sim])
-                            file_name='npy/raw_signal_'+axe+'_'+sim+'_'+sea+'_normalized.npy'
+                            file_name=pr.path_in+'raw_signal_'+axe+'_'+sim+'_'+sea+'_normalized.npy'
                             print('Reading: '+file_name)
                             darray=np.load(file_name) # read array
-                            file_name='npy/raw_signal_'+axe+'_'+sim_pilots[sim]+'_'+sea+'_normalized.npy'
+                            file_name=pr.path_in+'raw_signal_'+axe+'_'+sim_pilots[sim]+'_'+sea+'_normalized.npy'
                             print('Reading: '+file_name)
                             darray_p=np.load(file_name) # read array
                             add_file='_n-std'+str(n_std)+'_tot-gp'+str(tot_gp)+'_max-ssd'+str(max_ssd)+'_'+filter_type+str(sigma)+'_'+axe+'_'+borders[iborder]+'_'+sea
@@ -123,12 +123,12 @@ ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 
 # Put a legend to the right of the current axis
 #ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig('png/sensitivity_SSUD_ERA5_normalized.png', bbox_inches="tight",dpi=dpi_num)
+plt.savefig(pr.path_out+'sensitivity_SSUD_ERA5_normalized.png', bbox_inches="tight",dpi=dpi_num)
 
 legende = plt.legend(loc="lower right", ncol=2, framealpha=1,prop={'size': 10})
 frame = legende.get_frame()
 frame.set_color('white')
-pr.export_legend(legende,'png/sensitivity_SSUD_ERA5_legend_normalized.png')
+pr.export_legend(legende,pr.path_out+'sensitivity_SSUD_ERA5_legend_normalized.png')
 plt.legend().set_visible(False)
 
 plt.close("all")
@@ -161,12 +161,12 @@ ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 
 # Put a legend to the right of the current axis
 #ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig('png/sensitivity_ratio_normalized.png', bbox_inches="tight",dpi=dpi_num)
+plt.savefig(pr.path_out+'sensitivity_ratio_normalized.png', bbox_inches="tight",dpi=dpi_num)
 
 legende = plt.legend(loc="lower right", ncol=2, framealpha=1,prop={'size': 10})
 frame = legende.get_frame()
 frame.set_color('white')
-pr.export_legend(legende,'png/sensitivity_ratio_legend_normalized.png')
+pr.export_legend(legende,pr.path_out+'sensitivity_ratio_legend_normalized.png')
 plt.legend().set_visible(False)
 
 plt.close("all")
